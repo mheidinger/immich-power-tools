@@ -6,6 +6,8 @@ export interface ConfigContextType {
   version?: string;
   geminiEnabled: boolean;
   googleMapsApiKey: string;
+  dawarichUrlConfigured: boolean;
+  dawarichApiKeyConfigured: boolean;
 }
 
 const ConfigContext = createContext<ConfigContextType>({
@@ -14,6 +16,8 @@ const ConfigContext = createContext<ConfigContextType>({
   version: "",
   geminiEnabled: false,
   googleMapsApiKey: "",
+  dawarichUrlConfigured: false,
+  dawarichApiKeyConfigured: false
 });
 
 export default ConfigContext;

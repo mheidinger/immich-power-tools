@@ -8,7 +8,7 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import 'leaflet-defaulticon-compatibility';
 
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IPlace } from "@/types/common";
 import CustomMarker from "./CustomMarker";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,8 @@ import { Label } from "@/components/ui/label";
 
 interface MapComponentProps {
   location: IPlace;
-  onLocationChange: (place: IPlace) => void;
+  // Set to undefined to disable location changes from the map. Will hide the input field and mouse handler.
+  onLocationChange?: (place: IPlace) => void;
 }
 
 interface MapMouseHandlerProps {
@@ -41,7 +42,7 @@ export default function Map({ location, onLocationChange }: MapComponentProps) {
     const normalized = L.latLng(coords);
 
     setPosition(coords);
-    onLocationChange({
+    onLocationChange?.({
       latitude: normalized.lat,
       longitude: normalized.lng,
       name: locationName
@@ -50,23 +51,33 @@ export default function Map({ location, onLocationChange }: MapComponentProps) {
 
   const handleNameChange = (name: string) => {
     setLocationName(name);
-    onLocationChange({
+    onLocationChange?.({
       latitude: location.latitude,
       longitude: location.longitude,
       name: name
     });
   };
 
+  // If we don't accept changes on the map, then we accept changes from the location prop
+  useEffect(() => {
+    if (onLocationChange) {
+      return;
+    }
+    setPosition([location.latitude, location.longitude]);
+  }, [location, onLocationChange]);
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label>Location Name</Label>
-        <Input
-          placeholder="Enter location name"
-          value={locationName}
-          onChange={(e) => handleNameChange(e.target.value)}
-        />
-      </div>
+      {onLocationChange && (
+        <div className="flex flex-col gap-2">
+          <Label>Location Name</Label>
+          <Input
+            placeholder="Enter location name"
+            value={locationName}
+            onChange={(e) => handleNameChange(e.target.value)}
+          />
+        </div>
+      )}
       <MapContainer
         center={position}
         zoom={14}
@@ -76,7 +87,7 @@ export default function Map({ location, onLocationChange }: MapComponentProps) {
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <MapMouseHandler onMouseDown={handleClick} />
+        {onLocationChange && <MapMouseHandler onMouseDown={handleClick} />}
         <CustomMarker position={position} />
       </MapContainer>
     </div>

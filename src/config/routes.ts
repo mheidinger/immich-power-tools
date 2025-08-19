@@ -63,7 +63,6 @@ export const REWIND_STATS = BASE_API_ENDPOINT + "/rewind/stats";
 // Find
 export const FIND_ASSETS = BASE_API_ENDPOINT + "/find/search";
 
-
 // Share Link
 export const SHARE_LINK_PATH = (token: string) => BASE_API_ENDPOINT + "/share-link/" + token;
 export const SHARE_LINK_GENERATE_PATH = BASE_API_ENDPOINT + "/share-link/generate";
@@ -71,3 +70,6 @@ export const SHARE_LINK_ASSETS_PATH = (token: string) => BASE_API_ENDPOINT + "/s
 export const SHARE_LINK_PEOPLE_PATH = (token: string) => BASE_API_ENDPOINT + "/share-link/" + token + "/people";
 export const SHARE_LINK_DOWNLOAD_PATH = (token: string) => BASE_API_ENDPOINT + "/share-link/" + token + "/download";
 export const DOWNLOAD_ASSETS_PATH = BASE_PROXY_ENDPOINT + "/download/archive";
+
+// Dawarich
+export const DAWARICH_POINTS_PATH = BASE_API_ENDPOINT + "/dawarich/points";

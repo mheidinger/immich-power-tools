@@ -119,13 +119,13 @@ export default function TagMissingLocationSearchLatLong(
             onBlur={(e) => handleBlur()}
           />
 
-        
+
         </div>
       </div>
 
       {/* Recent Searches */}
-      <RecentSearches 
-        searchType="latlong" 
+      <RecentSearches
+        searchType="latlong"
         onSelect={(place) => {
           setFormData(place);
           onLocationChange(place);
@@ -136,11 +136,11 @@ export default function TagMissingLocationSearchLatLong(
 
       <div className="self-end">
         <Button
-          variant="outline"
+          variant="default"
           onClick={handleSubmit}
           disabled={!isValid || submitting}
         >
-          {submitting ? ("Adding...") : ("Add New Location")}
+          {submitting ? ("Tagging...") : ("Tag Location")}
         </Button>
       </div>
     </div>

@@ -35,6 +35,8 @@ App.getInitialProps = async () => {
       version: ENV.VERSION,
       geminiEnabled: !!ENV.GEMINI_API_KEY?.length,
       googleMapsApiKey: ENV.GOOGLE_MAPS_API_KEY,
+      dawarichUrlConfigured: !!ENV.DAWARICH_URL?.length,
+      dawarichApiKeyConfigured: !!ENV.DAWARICH_API_KEY?.length,
     },
   };
 };

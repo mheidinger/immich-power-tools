@@ -41,6 +41,12 @@ export default function MissingLocations() {
   });
 
   const selectedAssets = useMemo(() => contextState.assets.filter((a) => contextState.selectedIds.includes(a.id)), [contextState.assets, contextState.selectedIds]);
+  const selectedAssetsDateRange = useMemo(() => {
+    if (selectedAssets.length === 0) return undefined;
+    const start = new Date(Math.min(...selectedAssets.map(a => new Date(a.localDateTime).getTime())));
+    const end = new Date(Math.max(...selectedAssets.map(a => new Date(a.localDateTime).getTime())));
+    return { start, end };
+  }, [selectedAssets]);
 
   const handleSubmit = async (place: IPlace) => {
     await updateAssets({
@@ -169,7 +175,7 @@ export default function MissingLocations() {
                     Select all
                   </Button>
                 )}
-                <TagMissingLocationDialog onSubmit={handleSubmit} />
+                <TagMissingLocationDialog onSubmit={handleSubmit} selectedAssetsDateRange={selectedAssetsDateRange} />
                 <AssetOffsetDialog assets={selectedAssets} onComplete={handleOffsetComplete} />
                 <div className="h-[10px] w-[1px] bg-zinc-500 dark:bg-zinc-600"></div>
                 <AlertDialog

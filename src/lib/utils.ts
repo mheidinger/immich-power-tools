@@ -14,12 +14,12 @@ export interface RecentSearch {
   latitude: number;
   longitude: number;
   timestamp: number;
-  searchType: 'osm' | 'immich' | 'latlong' | 'map';
+  searchType: 'osm' | 'immich' | 'latlong' | 'map' | 'dawarich';
 }
 
 export const getRecentSearches = (): RecentSearch[] => {
   if (typeof window === 'undefined') return [];
-  
+
   try {
     const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
     return stored ? JSON.parse(stored) : [];
@@ -31,7 +31,7 @@ export const getRecentSearches = (): RecentSearch[] => {
 
 export const addRecentSearch = (place: { name: string; latitude: number; longitude: number }, searchType: RecentSearch['searchType']): void => {
   if (typeof window === 'undefined') return;
-  
+
   try {
     const recentSearches = getRecentSearches();
     const newSearch: RecentSearch = {
@@ -41,17 +41,17 @@ export const addRecentSearch = (place: { name: string; latitude: number; longitu
       timestamp: Date.now(),
       searchType
     };
-    
+
     // Remove duplicate if exists
     const filteredSearches = recentSearches.filter(
-      search => !(search.name === place.name && 
-                  search.latitude === place.latitude && 
+      search => !(search.name === place.name &&
+                  search.latitude === place.latitude &&
                   search.longitude === place.longitude)
     );
-    
+
     // Add new search at the beginning
     const updatedSearches = [newSearch, ...filteredSearches].slice(0, MAX_RECENT_SEARCHES);
-    
+
     localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updatedSearches));
   } catch (error) {
     console.error('Error saving recent search to localStorage:', error);

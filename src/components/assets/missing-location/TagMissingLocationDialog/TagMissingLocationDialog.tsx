@@ -17,6 +17,8 @@ import dynamic from "next/dynamic";
 import { usePhotoSelectionContext } from "@/contexts/PhotoSelectionContext";
 import { addRecentSearch } from "@/lib/utils";
 import RecentSearches from "./RecentSearches";
+import TagMissingLocationDawarichSearchAndAdd from "./TagMissingLocationDawarichSearchAndAdd";
+import { useConfig } from "@/contexts/ConfigContext";
 
 const LazyMap = dynamic(() => import("./Map"), {
   ssr: false
@@ -24,10 +26,14 @@ const LazyMap = dynamic(() => import("./Map"), {
 
 interface ITagMissingLocationDialogProps {
   onSubmit: (place: IPlace) => Promise<any>;
+  selectedAssetsDateRange?: { start: Date, end: Date };
 }
 export default function TagMissingLocationDialog({
   onSubmit,
+  selectedAssetsDateRange
 }: ITagMissingLocationDialogProps) {
+  const {dawarichUrlConfigured} = useConfig();
+
   const { selectedIds } = usePhotoSelectionContext();
   const [open, setOpen] = useState(false);
   const [mapPosition, setMapPosition] = useState<IPlace>({
@@ -59,6 +65,7 @@ export default function TagMissingLocationDialog({
             <TabsTrigger value="searchOsm" className="w-full">Open Street Map</TabsTrigger>
             <TabsTrigger value="search" className="w-full">Immich Geo</TabsTrigger>
             <TabsTrigger value="latlong" className="w-full">Lat &amp; Long</TabsTrigger>
+            {dawarichUrlConfigured && selectedAssetsDateRange && <TabsTrigger value="dawarich" className="w-full">Dawarich</TabsTrigger>}
             <TabsTrigger value="maps" className="w-full">Map</TabsTrigger>
           </TabsList>
           <TabsContent value="searchOsm">
@@ -69,6 +76,12 @@ export default function TagMissingLocationDialog({
           </TabsContent>
           <TabsContent value="latlong">
             <TagMissingLocationSearchLatLong onSubmit={onSubmit} onOpenChange={setOpen} location={mapPosition} onLocationChange={setMapPosition} />
+          </TabsContent>
+          <TabsContent value="dawarich">
+            {selectedAssetsDateRange ?
+              <TagMissingLocationDawarichSearchAndAdd onSubmit={onSubmit} onOpenChange={setOpen} onLocationChange={setMapPosition} selectedAssetsDateRange={selectedAssetsDateRange} /> :
+              <p className="text-center">Dawarich search is not available for this selection.</p>
+            }
           </TabsContent>
           <TabsContent value="maps">
             <div className="flex flex-col gap-6 items-center min-w-0 max-w-full py-4">
@@ -87,7 +100,7 @@ export default function TagMissingLocationDialog({
                 longitude: isNaN(mapPosition.longitude) ? 0 : mapPosition.longitude,
                 name: mapPosition.name,
               }} onLocationChange={setMapPosition} />
-              <div className="flex gap-2">
+              <div className="flex gap-2 self-end">
                 <Button
                   variant="outline"
                   onClick={() => setMapPosition({
